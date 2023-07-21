@@ -6,7 +6,7 @@ const productSchema = new Schema({
     title: {type: String, required: true},
     description: {type: String, required: true},
     mainPhoto: {type: String, required: true},
-    photos: {type: Array, required: true},
+    photos: [String],
     currency: {type: String, required: true},
     categoryId: {type: Schema.Types.ObjectId, ref: 'Category'}
 }, { timestamps: true} );
