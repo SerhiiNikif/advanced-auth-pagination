@@ -2,6 +2,7 @@ import {
     getCategories,
     addCategory,
     getCategory,
+    getCategoryProducts,
     deleteCategory,
     editCategory
 } from "../services/category.service.js";
@@ -26,6 +27,13 @@ const getCategoryByIdController = async (req, res) => {
     res.status(200).json(getCategoryByIdService);
 }
 
+const getCategoryProductsController = async (req, res) => {
+    const getCategoryProductsService = await getCategoryProducts(
+        req.params.id
+    );
+    res.status(200).json(getCategoryProductsService);
+}
+
 const deleteCategoryController = async (req, res) => {
     const deleteCategoryService = await deleteCategory(
         req.params.id
@@ -45,6 +53,7 @@ export {
     getCategoriesController,
     addCategoryController,
     getCategoryByIdController,
+    getCategoryProductsController,
     deleteCategoryController,
     editCategoryController
 };

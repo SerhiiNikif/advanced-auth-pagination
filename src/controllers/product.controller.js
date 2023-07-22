@@ -7,8 +7,8 @@ import {
 } from "../services/product.service.js";
 
 const getProductsController = async (req, res) => {
-    const {limit, page, sort} = req.query;
-    const getCategoriesService = await getProducts(limit, page, sort);
+    const {attribute, sort, limit, page} = req.query;
+    const getCategoriesService = await getProducts(attribute, sort, limit, page);
     res.status(200).json(getCategoriesService);
 }
 

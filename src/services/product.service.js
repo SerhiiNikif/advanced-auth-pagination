@@ -2,23 +2,9 @@ import mongoose from "mongoose";
 import { Product } from "../models/Product.js";
 import createError from "../helpers/errors/createError.js";
 
-const getProducts = async (limit=10, page, sort) => {
-    if (
-        isNaN(limit) || 
-        (page && isNaN(page)) || 
-        sort && !['asc', 'desc'].includes(sort.toLowerCase())
-    ) throw createError(422, "Invalid query parameter");
-
-    const no_of_docs_each_page = +limit;
-    const current_page_number = page ? page - 1 : 0;
-    const sort_val = sort === 'desc' ? -1 : 1;
-
-    const result = await Product.aggregate([
-        { $project: { _id: 1, price: 1, title: 1, mainPhoto: 1, createDate: 1 } },
-        { $skip: no_of_docs_each_page * current_page_number }, 
-        { $limit: no_of_docs_each_page },
-        { $sort: {'price': sort_val } }
-    ]);
+const getProducts = async (attribute, sort, limit, page) => {
+    const dto = { _id: 1, price: 1, title: 1, mainPhoto: 1, createDate: 1 };
+    let result = pagination(attribute, sort, limit, page, dto);
 
     return result
 }
@@ -63,6 +49,36 @@ const editProduct = async (id, price, title,  description, mainPhoto, photos, cu
         {new: true});
 
     if (!result) throw createError(404);
+
+    return result
+}
+
+const pagination = async (attribute, sort, limit=10, page, dto) => {
+    const docLimit = +limit;
+    const pageNumber = page ? page - 1 : 0;
+
+    const arrForAggregate = [
+        { $project: dto },
+        { $skip: docLimit * pageNumber }, 
+        { $limit: docLimit },
+    ];
+
+    if (typeof attribute !== 'undefined' && ['price', 'createDate'].includes(attribute.toLowerCase()) &&
+        typeof sort !== 'undefined' && ['asc', 'desc'].includes(sort.toLowerCase())
+    ) {
+        // if attribute and sort are specified
+        arrForAggregate.push({ $sort: {[attribute]: sort === 'desc' ? -1 : 1} });
+    } else if (typeof attribute === 'undefined' && typeof sort === 'undefined') {
+        // skip if attribute and sort are not specified
+    } else {
+        /*
+            If the parameter 'attribute' was specified without 'sort', or vice versa, 
+            or if these parameters were specified incorrectly
+        */
+        throw createError(422, "You specified the 'attribute' and 'sort' parameters incorrectly");
+    }
+
+    let result = await Product.aggregate(arrForAggregate);
 
     return result
 }

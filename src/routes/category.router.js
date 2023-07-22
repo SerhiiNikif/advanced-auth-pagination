@@ -3,6 +3,7 @@ import {
     getCategoriesController,
     addCategoryController,
     getCategoryByIdController,
+    getCategoryProductsController,
     deleteCategoryController,
     editCategoryController
 } from '../controllers/category.controller.js';
@@ -15,6 +16,7 @@ const router = express.Router();
 router.get('/', ctrlWrapper(getCategoriesController));
 router.post('/', isAuth, ctrlWrapper(addCategoryController));
 router.get('/:id', isValidId, ctrlWrapper(getCategoryByIdController));
+router.get("/:id/product", ctrlWrapper(getCategoryProductsController));
 router.delete('/:id', isAuth, isValidId, ctrlWrapper(deleteCategoryController));
 router.put('/:id', isAuth, isValidId, ctrlWrapper(editCategoryController));
 
