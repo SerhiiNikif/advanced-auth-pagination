@@ -1,5 +1,6 @@
 import express from "express";
 import categoryRouter from "./routes/category.router.js";
+import productRouter from "./routes/product.router.js";
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.get("/ping", (req, res) => {
 });
 
 app.use('/category', categoryRouter);
+app.use('/product', productRouter);
 
 app.use((req, res) => {
     res.status(404).json({ message: "Not found" })

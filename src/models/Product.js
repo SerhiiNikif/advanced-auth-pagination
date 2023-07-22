@@ -8,8 +8,9 @@ const productSchema = new Schema({
     mainPhoto: {type: String, required: true},
     photos: [String],
     currency: {type: String, required: true},
+    createDate: {type: Date, default: Date.now},
     categoryId: {type: Schema.Types.ObjectId, ref: 'Category'}
-}, { timestamps: true} );
+});
 
 const handleErrors = (error, data, next)=> {
     const {name, code} = error;

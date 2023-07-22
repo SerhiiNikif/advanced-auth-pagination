@@ -2,8 +2,9 @@ import mongoose from "mongoose";
 const {Schema, model} = mongoose;
 
 const categorySchema = new Schema({
-    title: {type: String, required: true}
-}, { timestamps: true} );
+    title: {type: String, required: true},
+    createDate: {type: Date, default: Date.now}
+});
 
 const handleErrors = (error, data, next)=> {
     const {name, code} = error;

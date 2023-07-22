@@ -36,7 +36,7 @@ const deleteCategoryController = async (req, res) => {
 const editCategoryController = async (req, res) => {
     const editCategoryService = await editCategory(
         req.params.id,
-        req.body
+        req.body.title
     );
     res.status(200).json(editCategoryService);
 }
