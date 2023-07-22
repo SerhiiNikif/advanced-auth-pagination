@@ -7,15 +7,15 @@ import {
     editCategoryController
 } from '../controllers/category.controller.js';
 
-import {isValidId} from "../middlewares/index.js";
+import {isValidId, isAuth} from "../middlewares/index.js";
 import ctrlWrapper from "../helpers/errors/ctrlWrapper.js";
 
 const router = express.Router();
 
 router.get('/', ctrlWrapper(getCategoriesController));
-router.post('/', ctrlWrapper(addCategoryController));
+router.post('/', isAuth, ctrlWrapper(addCategoryController));
 router.get('/:id', isValidId, ctrlWrapper(getCategoryByIdController));
-router.delete('/:id', isValidId, ctrlWrapper(deleteCategoryController));
-router.put('/:id', isValidId, ctrlWrapper(editCategoryController));
+router.delete('/:id', isAuth, isValidId, ctrlWrapper(deleteCategoryController));
+router.put('/:id', isAuth, isValidId, ctrlWrapper(editCategoryController));
 
 export default router;

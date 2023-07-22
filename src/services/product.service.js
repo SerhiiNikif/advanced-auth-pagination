@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Product } from "../models/Product.js";
 import createError from "../helpers/errors/createError.js";
 
@@ -5,7 +6,7 @@ const getProducts = async (limit=10, page, sort) => {
     if (
         isNaN(limit) || 
         (page && isNaN(page)) || 
-        sort && !['asc', 'desc'].includes(sort)
+        sort && !['asc', 'desc'].includes(sort.toLowerCase())
     ) throw createError(422, "Invalid query parameter");
 
     const no_of_docs_each_page = +limit;
@@ -35,7 +36,6 @@ const addProduct = async (price, title, description, mainPhoto, photos, currency
 
     return {id: result._id}
 }
-import mongoose from "mongoose";
 
 const getProduct = async id => {
     const result = await Product.aggregate([

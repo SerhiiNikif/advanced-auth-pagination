@@ -7,15 +7,15 @@ import {
     editProductController
 } from '../controllers/product.controller.js';
 
-import {isValidId} from "../middlewares/index.js";
+import {isValidId, isAuth} from "../middlewares/index.js";
 import ctrlWrapper from "../helpers/errors/ctrlWrapper.js";
 
 const router = express.Router();
 
 router.get('/', ctrlWrapper(getProductsController));
-router.post('/', ctrlWrapper(addProductController));
+router.post('/', isAuth, ctrlWrapper(addProductController));
 router.get('/:id', isValidId, ctrlWrapper(getProductByIdController));
-router.delete('/:id', isValidId, ctrlWrapper(deleteProductController));
-router.put('/:id', isValidId, ctrlWrapper(editProductController));
+router.delete('/:id', isAuth, isValidId, ctrlWrapper(deleteProductController));
+router.put('/:id', isAuth, isValidId, ctrlWrapper(editProductController));
 
 export default router;

@@ -1,4 +1,6 @@
 import express from "express";
+
+import authRouter from './routes/auth.router.js';
 import categoryRouter from "./routes/category.router.js";
 import productRouter from "./routes/product.router.js";
 
@@ -11,6 +13,7 @@ app.get("/ping", (req, res) => {
     res.json({message: "ProductService.Version1.0.0"});
 });
 
+app.use('/auth', authRouter);
 app.use('/category', categoryRouter);
 app.use('/product', productRouter);
 

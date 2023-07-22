@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Category } from "../models/Category.js";
 import createError from '../helpers/errors/createError.js';
 
@@ -34,7 +35,10 @@ const addCategory = async title => {
 }
 
 const getCategory = async id => {
-    const result = await Category.findById(id);
+    const result = await Category.aggregate([
+        { $match: {"_id": new mongoose.Types.ObjectId(id)} },
+        { $project: { _id: 1, title: 1, createDate: 1 } }
+    ]);
     
     if (!result) throw createError(404);
 
