@@ -1,0 +1,469 @@
+openapi: 3.0.3
+info:
+  title: Categories and products
+  version: 1.0.0
+servers: 
+  - url: http://localhost:4000/
+paths:
+  /auth/registration:
+    post:
+      summary: Register user
+      tags:
+        - Auth
+      operationId: registration
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                username:
+                  type: string
+                  example: admin
+                password:
+                  type: string
+                  example: admin
+      responses:
+        '201':
+          description: Successful response with a registered user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        '400':
+          description: "User already exists"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+        '404':
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /auth/login:
+    post:
+      summary: "Issues a JWT token"
+      tags:
+        - Auth
+      operationId: login
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                username:
+                  type: string
+                  example: admin
+                  minimum: 2
+                  maximum: 255
+                password:
+                  type: string
+                  example: admin
+                  minimum: 2
+                  maximum: 255
+      responses:
+        '200':
+          headers:
+            Api-Token:
+              $ref: "#/components/headers/Api-Token"
+          description: Login response successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        '400':
+          description: "Wrong password entered"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+        '404':
+          description: "User not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /category:
+    get:
+      summary: Get all categories
+      tags:
+        - Categories
+      operationId: getCategories
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Categories"
+        '404':
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+    post:
+      summary: Create a category
+      tags:
+        - Categories
+      operationId: addCategory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  type: string
+                  example: Samsung
+      responses:
+        '201':
+          description: Successful response with created category
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+        '400':
+          description: "Category already exists"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error401"
+        '404':
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+  /category/{category_id}:
+    get:
+      summary: Get category by ID
+      tags:
+        - Categories
+      operationId: getCategory
+      parameters:
+        - name: category_id
+          in: path
+          required: true
+          description: Category ID
+          schema:
+            type: string
+          example: 6414218570da02fed5d5eb6b
+      responses:
+        '200':
+          description: Successful response with one category
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+        '404':
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+    delete:
+      summary: Delete category by ID
+      tags:
+        - Categories
+      operationId: deleteCategory
+      parameters:
+        - name: category_id
+          in: path
+          required: true
+          description: Category ID
+          schema:
+            type: string
+          example: 6414218570da02fed5d5eb6b
+      responses:
+        '200':
+          description: Successful removal
+          content:
+            application/json: {}
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error401"
+        '404':
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+
+  /product:
+    get:
+      summary: Get all products
+      tags:
+        - Products
+      operationId: getProducts
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Products"
+    post:
+      summary: Create a product
+      tags:
+        - Products
+      operationId: addProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                price:
+                  type: number
+                  example: 10000
+                title:
+                  type: string
+                  example: Galaxy S8 Plus
+                description:
+                  type: string
+                  example: Compact phablet with a huge 6.2-inch screen that has a 3K resolution.
+                mainPhoto:
+                  type: string
+                  example: https://techx.myanmarlinks.net/media/486/conversions/feature_image.jpg
+                photos:
+                  type: array
+                  example: ['https://techx.myanmarlinks.net/media/486/conversions/feature_image.jpg', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLGrONQgU164F4hcHS0zIjK0fk81gJcyIk-ofdSSR0PaNwqp00M9NfOKwG1huE4bWe0SE&usqp=CAU']
+                currency:
+                  type: string
+                  enum:
+                    - USD
+                    - EUR
+                categoryId:
+                  type: string
+                  example: 6414218570da02fed5d5eb6b
+      responses:
+        '201':
+          description: Successful response with created product
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error401"
+        '404':
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+  /product/{product_id}:
+    get:
+      summary: Get product by ID
+      tags:
+        - Products
+      operationId: getProduct
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product ID
+          schema:
+            type: string
+          example: 6414218570da02fed5d5eb6b
+      responses:
+        '200':
+          description: Successful response with one product
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+    delete:
+      summary: Delete product by ID
+      tags:
+        - Products
+      operationId: deleteProduct
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product ID
+          schema:
+            type: string
+          example: 6414218570da02fed5d5eb6b
+      responses:
+        '200':
+          description: Successful removal
+          content:
+            application/json: {}
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error401"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      
+  headers:
+    Api-Token:
+      schema:
+        type: string
+        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MTQyMTg1NzBkYTAyZmVkNWQ1ZWI2YiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTY3OTEzNzk3OSwiZXhwIjoxNjc5MjI0Mzc5fQ.Kk03XBKPF9rbhW8fui2qV9oo0M8FAyPMsWCy5U3l4do"
+        
+  schemas:
+    Category:
+      type: object
+      required:
+        - title
+      properties:
+        _id:
+          type: string
+          example: 6414218570da02fed5d5eb6b
+        title:
+          type: string
+          example: Samsung
+        createDate:
+          type: string
+          example: 2023-03-17T08:15:16.068+00:00
+          format: 2023-03-17T08:15:16.068+00:00
+    Categories:
+      type: array
+      items:
+        $ref: "#/components/schemas/Category"
+
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 6414218570da02fed5d5eb6b
+        price:
+          type: number
+          example: 10000
+        title:
+          type: string
+          example: Galaxy S8 Plus
+        description:
+          type: string
+          example: Compact phablet with a huge 6.2-inch screen that has a 3K resolution.
+        mainPhoto:
+          type: string
+          example: https://techx.myanmarlinks.net/media/486/conversions/feature_image.jpg
+        photos:
+          type: string
+          example: ['https://techx.myanmarlinks.net/media/486/conversions/feature_image.jpg', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLGrONQgU164F4hcHS0zIjK0fk81gJcyIk-ofdSSR0PaNwqp00M9NfOKwG1huE4bWe0SE&usqp=CAU']
+        currency:
+          type: string
+          enum:
+            - USD
+            - EUR
+        categoryId:
+          type: string
+          example: 6414218570da02fed5d5eb6b
+        createDate:
+          type: string
+          example: 2023-03-17T08:15:16.068+00:00
+          format: 2023-03-17T08:15:16.068+00:00
+    Products:
+      type: array
+      items:
+        $ref: "#/components/schemas/Product"
+
+    Error400:
+      type: object
+      required:
+        - code
+        - name
+      properties:
+        code:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Bad Request
+    Error401:
+      type: object
+      required:
+        - code
+        - name
+      properties:
+        code:
+          type: integer
+          example: 401
+        message:
+          type: string
+          example: Unauthorized
+    Error404:
+      type: object
+      required:
+        - code
+        - name
+      properties:
+        code:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: Not found
+
+security:
+  - bearerAuth: []
