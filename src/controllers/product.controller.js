@@ -7,8 +7,8 @@ import {
 } from "../services/product.service.js";
 
 const getProductsController = async (req, res) => {
-    const {attribute, sort, limit, page} = req.query;
-    const getCategoriesService = await getProducts(attribute, sort, limit, page);
+    const {attribute, sort, limit, page, currency} = req.query;
+    const getCategoriesService = await getProducts(attribute, sort, limit, page, currency);
     res.status(200).json(getCategoriesService);
 }
 
@@ -27,7 +27,8 @@ const addProductController = async (req, res) => {
 
 const getProductByIdController = async (req, res) => {
     const getCategoryByIdService = await getProduct(
-        req.params.id
+        req.params.id,
+        req.query.currency
     );
     res.status(200).json(getCategoryByIdService);
 }

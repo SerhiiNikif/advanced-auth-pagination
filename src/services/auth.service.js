@@ -1,8 +1,10 @@
 import bcrypt from 'bcryptjs';
 
 import { User } from "../models/User.js";
-import generateAccessToken from '../helpers/auth/generateAccessToken.js';
-import createError from '../helpers/errors/createError.js';
+import { 
+    generateAccessToken, 
+    createError 
+} from "../helpers/index.js";
 
 const registration = async (username, password) => {
     let user = await User.findOne({ username });

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import createError from "../helpers/errors/createError.js";
+import { createError } from "../helpers/index.js";
 
 const {isValidObjectId} = mongoose;
 

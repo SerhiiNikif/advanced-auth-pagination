@@ -1,6 +1,4 @@
-import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../config/index.js';
-import createError from '../helpers/errors/createError.js';
+import { createError } from "../helpers/index.js";
 
 const isAuth = (req, res, next) => { 
     if (req.method === 'OPTIONS') {

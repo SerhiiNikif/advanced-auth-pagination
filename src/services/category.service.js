@@ -1,10 +1,19 @@
 import mongoose from "mongoose";
 import { Category } from "../models/Category.js";
-import createError from '../helpers/errors/createError.js';
+import { 
+    paginationData,
+    createError,
+    convertCurrencyFromURLParams
+} from '../helpers/index.js';
 
 const getCategories = async (limit, page) => {
-    const dto = { _id: 1, title: 1, createDate: 1 };
-    let result = pagination(limit, page, dto);
+    const arrForAggregate = [
+        { $project: { _id: 1, title: 1, createDate: 1 } }
+    ];
+
+    paginationData(arrForAggregate, limit, page);
+
+    const result = await Category.aggregate(arrForAggregate);
 
     return result
 }
@@ -34,8 +43,8 @@ const getCategory = async id => {
     return result;
 }
 
-const getCategoryProducts = async id => {
-    const result = await Category.aggregate([
+const getCategoryProducts = async (id, currency) => {
+    let result = await Category.aggregate([
         { $match: { "_id": new mongoose.Types.ObjectId(id) } },
         {
             $lookup: {
@@ -74,9 +83,11 @@ const getCategoryProducts = async id => {
                 products: 1
             }
         }
-      ]
-    
-    );
+    ]);
+
+    if (typeof currency !== 'undefined' && ['usd', 'eur'].includes(currency.toLowerCase())) {
+        result[0].products = await convertCurrencyFromURLParams(result[0].products, currency);
+    }
 
     if (!result) throw createError(404);
 
@@ -99,21 +110,6 @@ const editCategory = async (id, title) => {
     );
 
     if (!result) throw createError(404);
-
-    return result
-}
-
-const pagination = async (limit=10, page, dto) => {
-    const docLimit = +limit;
-    const pageNumber = page ? page - 1 : 0;
-
-    const arrForAggregate = [
-        { $project: dto },
-        { $skip: docLimit * pageNumber }, 
-        { $limit: docLimit },
-    ];
-
-    let result = await Category.aggregate(arrForAggregate);
 
     return result
 }

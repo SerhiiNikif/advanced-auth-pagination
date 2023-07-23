@@ -28,8 +28,10 @@ const getCategoryByIdController = async (req, res) => {
 }
 
 const getCategoryProductsController = async (req, res) => {
+    const {currency} = req.query;
     const getCategoryProductsService = await getCategoryProducts(
-        req.params.id
+        req.params.id,
+        currency
     );
     res.status(200).json(getCategoryProductsService);
 }
