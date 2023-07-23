@@ -96,9 +96,24 @@ paths:
   /category:
     get:
       summary: Get all categories
+      description: Gets data with (query params) or without them
       tags:
         - Categories
       operationId: getCategories
+      parameters:
+        - name: limit
+          in: query
+          description: Limiting the number of results returned
+          required: false
+          type: number
+          default: 10
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          type: number
+          default: 1
+      security: []
       responses:
         '200':
           description: Success
@@ -161,6 +176,7 @@ paths:
       tags:
         - Categories
       operationId: getCategory
+      security: []
       parameters:
         - name: category_id
           in: path
@@ -184,6 +200,56 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error400"
+        '404':
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+    put:
+      summary: Edit category by ID
+      tags:
+        - Categories
+      operationId: editCategory
+      parameters:
+        - name: category_id
+          in: path
+          required: true
+          description: Category ID
+          schema:
+            type: string
+          example: 6414218570da02fed5d5eb6b
+        - name: category
+          in: body
+          description: Category object with updated data
+          required: true
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                example: Samsung
+      responses:
+        '200':
+          description: Successful response with one category
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error401"
         '404':
           description: "Not found"
           content:
@@ -226,6 +292,47 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error404"
+  /category/{category_id}/product:
+    get:
+      summary: Get products by category ID
+      tags:
+        - Categories
+      operationId: getCategoryProducts
+      security: []
+      parameters:
+        - name: category_id
+          in: path
+          required: true
+          description: Category ID
+          schema:
+            type: string
+          example: 6414218570da02fed5d5eb6b
+        - name: currency
+          in: query
+          description: The symbol code of the currency to which the prices of the products must be converted
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Successful response with one category
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+        '404':
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+        '500':
+          description: "Server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error500"
 
   /product:
     get:
@@ -233,6 +340,39 @@ paths:
       tags:
         - Products
       operationId: getProducts
+      parameters:
+        - name: limit
+          in: query
+          description: Limiting the number of results returned
+          required: false
+          type: number
+          default: 10
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          type: number
+          default: 1
+        - name: currency
+          in: query
+          description: The symbol code of the currency to which the prices of the products must be converted
+          required: false
+          type: string
+        - name: attribute
+          in: query
+          description: The attribute to sort by
+          required: false
+          type: string
+        - name: sort
+          in: query
+          description: Sort direction (asc, desc)
+          required: false
+          type: "string"
+
+          allOf:
+            - $ref: "#/parameters/attribute"
+            - $ref: "#/parameters/sort"
+      security: []
       responses:
         '200':
           description: Success
@@ -242,6 +382,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Products"
+        '422':
+          description: "Server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error422"
     post:
       summary: Create a product
       tags:
@@ -303,6 +449,7 @@ paths:
       tags:
         - Products
       operationId: getProduct
+      security: []
       parameters:
         - name: product_id
           in: path
@@ -311,6 +458,11 @@ paths:
           schema:
             type: string
           example: 6414218570da02fed5d5eb6b
+        - name: currency
+          in: query
+          description: The symbol code of the currency to which the prices of the products must be converted
+          required: false
+          type: string
       responses:
         '200':
           description: Successful response with one product
@@ -326,6 +478,76 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error400"
+    put:
+      summary: Edit product by ID
+      tags:
+        - Products
+      operationId: editProduct
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product ID
+          schema:
+            type: string
+          example: 6414218570da02fed5d5eb6b
+        - name: product
+          in: body
+          description: Product object with updated data
+          required: true
+          schema:
+            type: object
+            properties:
+              price:
+                type: number
+                example: 10000
+              title:
+                type: string
+                example: Galaxy S8 Plus
+              description:
+                type: string
+                example: Compact phablet with a huge 6.2-inch screen that has a 3K resolution.
+              mainPhoto:
+                type: string
+                example: https://techx.myanmarlinks.net/media/486/conversions/feature_image.jpg
+              photos:
+                type: array
+                example: ['https://techx.myanmarlinks.net/media/486/conversions/feature_image.jpg', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLGrONQgU164F4hcHS0zIjK0fk81gJcyIk-ofdSSR0PaNwqp00M9NfOKwG1huE4bWe0SE&usqp=CAU']
+              currency:
+                type: string
+                enum:
+                  - USD
+                  - EUR
+              categoryId:
+                type: string
+                example: 6414218570da02fed5d5eb6b
+      responses:
+        '200':
+          description: Successful response with one category
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400"
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error401"
+        '404':
+          description: "Not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
     delete:
       summary: Delete product by ID
       tags:
@@ -464,6 +686,30 @@ components:
         message:
           type: string
           example: Not found
+    Error422:
+      type: object
+      required:
+        - code
+        - name
+      properties:
+        code:
+          type: integer
+          example: 422
+        message:
+          type: string
+          example: You specified the 'attribute' and 'sort' parameters incorrectly
+    Error500:
+      type: object
+      required:
+        - code
+        - name
+      properties:
+        code:
+          type: integer
+          example: 500
+        message:
+          type: string
+          example: Argument passed in must be a string of 12 bytes or a string of 24 hex characters or an integer
 
 security:
   - bearerAuth: []
