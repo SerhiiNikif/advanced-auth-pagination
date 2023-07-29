@@ -17,7 +17,7 @@ cd rest-api-mongo-swagger
 Create an `.env` file in the root of the project and fill it with the values ​​from the `.env.sample` file.
 
 ```
-MONGO_URI=mongodb://localhost:27017/db
+MONGO_URL=mongodb://localhost:27017/db
 PORT=4000
 BCRYPT_SALT=10
 JWT_SECRET=SECRET_VALUE

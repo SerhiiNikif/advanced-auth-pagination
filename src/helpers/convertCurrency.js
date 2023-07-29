@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { PBANK_API_URL } from '../config/index.js';
 
 const getExchangeRate = async toCurrency => {
-    const response = await axios.get(PBANK_API_URL);
+    const response = await axios.get(process.env.PBANK_API_URL);
     const filteredArray = response.data.filter(obj => obj.ccy.toLowerCase() === toCurrency.toLowerCase())[0].buy;
 
     return filteredArray;

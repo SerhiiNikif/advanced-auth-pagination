@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
-import { MONGO_URI } from './index.js';
 
 const dbConnection = async () => {
     await mongoose
-        .connect(MONGO_URI)
+        .connect(process.env.MONGO_URL)
         .then(() => console.log('DataBase connected...'))
         .catch(err => console.log(err))
 };
