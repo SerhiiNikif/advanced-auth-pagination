@@ -1,16 +1,14 @@
 import bcrypt from 'bcryptjs';
 
 import { User } from "../models/User.js";
-import { 
-    generateAccessToken, 
-    createError 
-} from "../helpers/index.js";
+import { generateAccessToken } from "../helpers/index.js";
+import ApiError from '../exceptions/api-error.js';
 
 const registration = async (username, password) => {
     let user = await User.findOne({ username });
 
     if (user) {
-        throw createError(400, `User ${username} already exists`);
+        throw ApiError.BadRequest(`User ${username} already exists`);
     }
     
     user = new User({username, password});
@@ -27,7 +25,7 @@ const registration = async (username, password) => {
             token: token
         }
     } else {
-         throw createError(400, 'Token error');
+        throw ApiError.BadRequest('Token error');
     }
 };
 
@@ -35,13 +33,13 @@ const login = async (username, password) => {
     const user = await User.findOne({ username });
 
     if (!user) {
-        throw createError(404, `User ${username} not found`);
+        throw ApiError.BadRequest(`User ${username} not found`);
     }
 
     const validPassword = bcrypt.compareSync(password, user.password);
 
     if (!validPassword) {
-        throw createError(400, 'Wrong password entered');
+        throw ApiError.BadRequest('Wrong password entered')
     }
 
     const token = generateAccessToken(user._id);
@@ -49,7 +47,7 @@ const login = async (username, password) => {
     if (token) {
         return { token: token }
     } else {
-        throw createError(400, 'Token error');
+        throw ApiError.BadRequest('Token error');
     }  
 }
 

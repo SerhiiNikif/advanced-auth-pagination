@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 import { Category } from "../models/Category.js";
 import { 
     paginationData,
-    createError,
     convertCurrencyFromURLParams
 } from '../helpers/index.js';
+import ApiError from '../exceptions/api-error.js';
 
 const getCategories = async (limit, page) => {
     const arrForAggregate = [
@@ -22,7 +22,7 @@ const addCategory = async title => {
     let category = await Category.findOne({ title });
 
     if (category) {
-        throw createError(400, `Category ${title} already exists`);
+        throw ApiError.BadRequest(`Category ${title} already exists`);
     }
 
     category = new Category({title});
@@ -38,7 +38,7 @@ const getCategory = async id => {
         { $project: { _id: 1, title: 1, createDate: 1 } }
     ]);
     
-    if (!result) throw createError(404);
+    if (!result) throw ApiError.NotFoundError()
 
     return result;
 }
@@ -89,7 +89,7 @@ const getCategoryProducts = async (id, currency) => {
         result[0].products = await convertCurrencyFromURLParams(result[0].products, currency);
     }
 
-    if (!result) throw createError(404);
+    if (!result) throw ApiError.NotFoundError()
 
     return result;
 }
@@ -97,9 +97,9 @@ const getCategoryProducts = async (id, currency) => {
 const deleteCategory = async id => {
     let result = await Category.findByIdAndDelete(id);
 
-    if (!result) throw createError(404);
+    if (!result) throw ApiError.NotFoundError()
 
-    return {message: "category deleted"}
+    return {id: result._id}
 }
 
 const editCategory = async (id, title) => {
@@ -109,7 +109,7 @@ const editCategory = async (id, title) => {
         {new: true}
     );
 
-    if (!result) throw createError(404);
+    if (!result) throw ApiError.NotFoundError()
 
     return result
 }

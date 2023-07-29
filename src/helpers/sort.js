@@ -1,4 +1,4 @@
-import { createError } from "../helpers/index.js";
+import ApiError from '../exceptions/api-error.js';
 
 const sortByURLParams = async (arrForAggregate, attribute, sort) => {
     if (typeof attribute !== 'undefined' && ['price', 'createdate'].includes(attribute.toLowerCase()) &&
@@ -13,7 +13,7 @@ const sortByURLParams = async (arrForAggregate, attribute, sort) => {
             If the parameter 'attribute' was specified without 'sort', or vice versa,
             or if these parameters were specified incorrectly
         */
-        throw createError(422, "You specified the 'attribute' and 'sort' parameters incorrectly");
+        throw ApiError.SyntaxError("You specified the 'attribute' and 'sort' parameters incorrectly");
     }
 }
 

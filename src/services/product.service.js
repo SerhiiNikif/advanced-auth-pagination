@@ -3,9 +3,9 @@ import { Product } from "../models/Product.js";
 import { 
     paginationData, 
     sortByURLParams, 
-    convertCurrencyFromURLParams,
-    createError
+    convertCurrencyFromURLParams
 } from '../helpers/index.js';
+import ApiError from '../exceptions/api-error.js';
 
 const getProducts = async (attribute, sort, limit, page, currency) => {
     const arrForAggregate = [
@@ -29,7 +29,7 @@ const addProduct = async (price, title, description, mainPhoto, photos, currency
     let product = await Product.findOne({ title });
 
     if (product) {
-        throw createError(400, `Product ${title} already exists`);
+        throw ApiError.BadRequest(`Product ${title} already exists`);
     }
 
     product = new Product({price, title, description, mainPhoto, photos, currency, categoryId});
@@ -49,7 +49,7 @@ const getProduct = async (id, currency) => {
         result = await convertCurrencyFromURLParams(result, currency)
     }
     
-    if (!result) throw createError(404);
+    if (!result) throw ApiError.NotFoundError()
 
     return result;
 }
@@ -57,7 +57,7 @@ const getProduct = async (id, currency) => {
 const deleteProduct = async id => {
     let result = await Product.findByIdAndDelete(id);
 
-    if (!result) throw createError(404);
+    if (!result) throw ApiError.NotFoundError()
 
     return {message: "product deleted"}
 }
@@ -68,7 +68,7 @@ const editProduct = async (id, price, title,  description, mainPhoto, photos, cu
         {price, title,  description, mainPhoto, photos, currency, categoryId}, 
         {new: true});
 
-    if (!result) throw createError(404);
+    if (!result) throw ApiError.NotFoundError()
 
     return result
 }
