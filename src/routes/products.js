@@ -7,15 +7,16 @@ import {
     editProductController
 } from '../controllers/products-controller.js';
 
-import {isValidId, isAuth} from "../middlewares/index.js";
+import validateObjectId from "../middlewares/validateObjectId.js";
+import authMiddleware from '../middlewares/auth-middleware.js';
 import ctrlWrapper from "../helpers/errors/ctrlWrapper.js";
 
 const router = express.Router();
 
 router.get('/', ctrlWrapper(getProductsController));
-router.post('/', isAuth, ctrlWrapper(addProductController));
-router.get('/:id', isValidId, ctrlWrapper(getProductByIdController));
-router.delete('/:id', isAuth, isValidId, ctrlWrapper(deleteProductController));
-router.put('/:id', isAuth, isValidId, ctrlWrapper(editProductController));
+router.post('/', authMiddleware, ctrlWrapper(addProductController));
+router.get('/:id', validateObjectId, ctrlWrapper(getProductByIdController));
+router.delete('/:id', authMiddleware, validateObjectId, ctrlWrapper(deleteProductController));
+router.put('/:id', authMiddleware, validateObjectId, ctrlWrapper(editProductController));
 
 export default router;
