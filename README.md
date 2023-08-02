@@ -20,7 +20,8 @@ Create an `.env` file in the root of the project and fill it with the values ​
 MONGO_URL=mongodb://localhost:27017/db
 PORT=4000
 BCRYPT_SALT=10
-JWT_SECRET=SECRET_VALUE
+JWT_ACCESS_SECRET=jwt-secret-key
+JWT_REFRESH_SECRET=jwt-refresh-secret-key
 PBANK_API_URL=https://api.privatbank.ua/p24api/pubinfo
 ```
 

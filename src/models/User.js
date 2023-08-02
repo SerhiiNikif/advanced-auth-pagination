@@ -1,39 +1,11 @@
 import mongoose from "mongoose";
 const {Schema, model} = mongoose;
-import bcrypt from 'bcryptjs';
 
 const userSchema = new Schema({
-    username: {type: String, required: true, unique: true},
+    email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
-    createDate: {type: Date, default: Date.now}
+    isActivated: {type: Boolean, default: false},
+    activationLink: {type: String},
 });
 
-const handleErrors = (error, data, next)=> {
-    const {name, code} = error;
-    
-    if(name === "MongoServerError" && code === 11000) {
-        error.status = 409;
-    } else {
-        error.status = 400;
-        error.message = "missing required name field";
-    }
-    next()
-}
-
-//@ts-ignores
-userSchema.post('save', handleErrors);
-
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) {
-        return next();
-    }
-    const hash = await bcrypt.hash(this.password, process.env.BCRYPT_SALT);
-    this.password = hash;
-    next();
-});
-
-const User = model('User', userSchema);
-
-export {
-    User
-};
+export default model('User', userSchema);

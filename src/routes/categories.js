@@ -6,7 +6,7 @@ import {
     getCategoryProductsController,
     deleteCategoryController,
     editCategoryController
-} from '../controllers/category.controller.js';
+} from '../controllers/categories-controller.js';
 
 import {isValidId, isAuth} from "../middlewares/index.js";
 import ctrlWrapper from "../helpers/errors/ctrlWrapper.js";

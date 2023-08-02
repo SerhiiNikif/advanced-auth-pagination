@@ -23,6 +23,4 @@ categorySchema.post('save', handleErrors);
 
 const Category = model("Category", categorySchema);
 
-export {
-    Category
-}
+export default Category;

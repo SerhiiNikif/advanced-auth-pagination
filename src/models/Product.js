@@ -29,6 +29,4 @@ productSchema.post('save', handleErrors);
 
 const Product = model("Product", productSchema);
 
-export {
-    Product
-}
+export default Product;

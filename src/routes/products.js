@@ -5,7 +5,7 @@ import {
     getProductByIdController,
     deleteProductController,
     editProductController
-} from '../controllers/product.controller.js';
+} from '../controllers/products-controller.js';
 
 import {isValidId, isAuth} from "../middlewares/index.js";
 import ctrlWrapper from "../helpers/errors/ctrlWrapper.js";

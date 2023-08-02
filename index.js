@@ -1,11 +1,19 @@
 import 'dotenv/config';
+import mongoose from "mongoose";
 import app from "./src/app.js";
-import { dbConnection } from "./src/config/db.js";
 
 const PORT = process.env.PORT || 5000;
 
-dbConnection();
+const start = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_URL, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        })
+        app.listen(PORT, () => console.log(`Server started on PORT = ${PORT}`))
+    } catch (e) {
+        console.log(e);
+    }
+}
 
-app.listen(PORT, () => {
-    console.log("Server running on port", PORT);
-});
+start()
