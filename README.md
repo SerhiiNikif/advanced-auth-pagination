@@ -17,11 +17,16 @@ cd rest-api-mongo-swagger
 Create an `.env` file in the root of the project and fill it with the values ​​from the `.env.sample` file.
 
 ```
-MONGO_URL=mongodb://localhost:27017/db
+MONGO_URL=local_database_url OR cloud_database_service_url
 PORT=4000
-BCRYPT_SALT=10
 JWT_ACCESS_SECRET=jwt-secret-key
 JWT_REFRESH_SECRET=jwt-refresh-secret-key
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=your_email
+GOOGLE_GEN_PASSWORD=generated app_password in google account
+API_URL=http://localhost:4000
+CLIENT_URL=https://google.com
 PBANK_API_URL=https://api.privatbank.ua/p24api/pubinfo
 ```
 
