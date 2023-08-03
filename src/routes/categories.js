@@ -1,24 +1,20 @@
 import express from "express";
-import {
-    getCategoriesController,
-    addCategoryController,
-    getCategoryByIdController,
-    getCategoryProductsController,
-    deleteCategoryController,
-    editCategoryController
-} from '../controllers/categories-controller.js';
-
-import validateObjectId from "../middlewares/validateObjectId.js";
-import authMiddleware from '../middlewares/auth-middleware.js';
-import ctrlWrapper from "../helpers/errors/ctrlWrapper.js";
+import {body} from 'express-validator';
 
 const router = express.Router();
 
-router.get('/', ctrlWrapper(getCategoriesController));
-router.post('/', authMiddleware, ctrlWrapper(addCategoryController));
-router.get('/:id', validateObjectId, ctrlWrapper(getCategoryByIdController));
-router.get("/:id/product", ctrlWrapper(getCategoryProductsController));
-router.delete('/:id', authMiddleware, validateObjectId, ctrlWrapper(deleteCategoryController));
-router.put('/:id', authMiddleware, validateObjectId, ctrlWrapper(editCategoryController));
+import categoriesController from '../controllers/categories-controller.js';
+import { validateObjectId, accessTokenValidator, validateInputFields, ctrlWrapper } from '../middlewares/index.js';
+
+const categoryValidations = [
+    body('title').isLength({ min: 3, max: 100 }).isString()
+];
+
+router.get('/', ctrlWrapper(categoriesController.getCategories));
+router.post('/', validateInputFields(categoryValidations), accessTokenValidator, ctrlWrapper(categoriesController.addCategory));
+router.get('/:id', validateObjectId, ctrlWrapper(categoriesController.getCategoryById));
+router.get("/:id/product", ctrlWrapper(categoriesController.getCategoryProducts));
+router.delete('/:id', accessTokenValidator, validateObjectId, ctrlWrapper(categoriesController.deleteCategory));
+router.put('/:id', validateInputFields(categoryValidations), accessTokenValidator, validateObjectId, ctrlWrapper(categoriesController.editCategory));
 
 export default router;

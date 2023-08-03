@@ -1,4 +1,3 @@
-export {default as ctrlWrapper} from "./errors/ctrlWrapper.js";
-export {default as paginationData} from "./pagination.js";
-export {default as sortByURLParams} from "./sort.js";
-export {default as convertCurrencyFromURLParams} from "./convertCurrency.js";
+export {default as convertCurrencyFromURLParams} from "./convertCurrencyFromURLParams.js";
+export {default as paginateData} from "./paginateData.js";
+export {default as sortByURLParams} from "./sortByURLParams.js";

@@ -5,10 +5,8 @@ import YAML from 'yamljs';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
-import authRouter from './routes/auth.js';
-import categoryRouter from "./routes/categories.js";
-import productRouter from "./routes/products.js";
-import errorMiddleware from './middlewares/error-middleware.js';
+import apiErrorHandler from './middlewares/apiErrorHandler.js';
+import configureRoutes from './routes/configureRoutes.js';
 
 const app = express();
 
@@ -22,10 +20,8 @@ app.use(cors());
 app.use(express.static("public"));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.use('/auth', authRouter);
-app.use('/category', categoryRouter);
-app.use('/product', productRouter);
+configureRoutes(app);
 
-app.use(errorMiddleware);
+app.use(apiErrorHandler);
 
 export default app;

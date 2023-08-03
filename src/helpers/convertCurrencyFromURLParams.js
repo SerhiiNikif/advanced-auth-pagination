@@ -7,7 +7,7 @@ const getExchangeRate = async toCurrency => {
     return filteredArray;
 }
 
-const convertCurrencyFromURLParams = async (result, currency) => {
+export default async function (result, currency) {
     const exchangeRate = await getExchangeRate(currency);
     for (const e of result) {
         e.price = Number((e.price / +exchangeRate).toFixed(2));
@@ -15,5 +15,3 @@ const convertCurrencyFromURLParams = async (result, currency) => {
 
     return result
 }
-
-export default convertCurrencyFromURLParams;

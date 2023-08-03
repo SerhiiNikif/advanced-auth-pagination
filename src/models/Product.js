@@ -12,21 +12,6 @@ const productSchema = new Schema({
     categoryId: {type: Schema.Types.ObjectId, ref: 'Category'}
 });
 
-const handleErrors = (error, data, next)=> {
-    const {name, code} = error;
-    
-    if(name === "MongoServerError" && code === 11000) {
-        error.status = 409;
-    } else {
-        error.status = 400;
-        error.message = "missing required name field";
-    }
-    next()
-}
-
-//@ts-ignore
-productSchema.post('save', handleErrors);
-
 const Product = model("Product", productSchema);
 
 export default Product;

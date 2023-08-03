@@ -1,61 +1,73 @@
-import {
-    getCategories,
-    addCategory,
-    getCategory,
-    getCategoryProducts,
-    deleteCategory,
-    editCategory
-} from "../services/category.service.js";
+import categoryService from '../services/category.service.js';
 
-const getCategoriesController = async (req, res) => {
-    const {limit, page} = req.query;
-    const getCategoriesService = await getCategories(limit, page);
-    res.status(200).json(getCategoriesService);
+class CategoryController {
+    async getCategories(req, res, next) {
+        try {
+            const {limit, page} = req.query;
+            const getCategoriesService = await categoryService.getCategories(limit, page);
+            res.status(200).json(getCategoriesService);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async addCategory(req, res, next) {
+        try {
+            const addCategoryService = await categoryService.addCategory(
+                req.body.title
+            );
+            res.status(201).json(addCategoryService);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async getCategoryById(req, res, next) {
+        try {
+            const getCategoryByIdService = await categoryService.getCategoryById(
+                req.params.id
+            );
+            res.status(200).json(getCategoryByIdService);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async getCategoryProducts (req, res) {
+        try {
+            const {currency} = req.query;
+            const getCategoryProductsService = await categoryService.getCategoryProducts(
+                req.params.id,
+                currency
+            );
+            res.status(200).json(getCategoryProductsService);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async deleteCategory(req, res, next) {
+        try {
+            const deleteCategoryService = await categoryService.deleteCategory(
+                req.params.id
+            );
+            res.status(200).json(deleteCategoryService);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async editCategory(req, res, next) {
+        try {
+            const editCategoryService = await categoryService.editCategory(
+                req.params.id,
+                req.body.title
+            );
+            res.status(200).json(editCategoryService);
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
-const addCategoryController = async (req, res) => {
-    const addCategoryService = await addCategory(
-        req.body.title
-    );
-    res.status(201).json(addCategoryService);
-}
-
-const getCategoryByIdController = async (req, res) => {
-    const getCategoryByIdService = await getCategory(
-        req.params.id
-    );
-    res.status(200).json(getCategoryByIdService);
-}
-
-const getCategoryProductsController = async (req, res) => {
-    const {currency} = req.query;
-    const getCategoryProductsService = await getCategoryProducts(
-        req.params.id,
-        currency
-    );
-    res.status(200).json(getCategoryProductsService);
-}
-
-const deleteCategoryController = async (req, res) => {
-    const deleteCategoryService = await deleteCategory(
-        req.params.id
-    );
-    res.status(200).json(deleteCategoryService);
-}
-
-const editCategoryController = async (req, res) => {
-    const editCategoryService = await editCategory(
-        req.params.id,
-        req.body.title
-    );
-    res.status(200).json(editCategoryService);
-}
-
-export {
-    getCategoriesController,
-    addCategoryController,
-    getCategoryByIdController,
-    getCategoryProductsController,
-    deleteCategoryController,
-    editCategoryController
-};
+export default new CategoryController();

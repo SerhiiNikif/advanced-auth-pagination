@@ -1,22 +1,24 @@
 import express from "express";
-import {
-    getProductsController,
-    addProductController,
-    getProductByIdController,
-    deleteProductController,
-    editProductController
-} from '../controllers/products-controller.js';
-
-import validateObjectId from "../middlewares/validateObjectId.js";
-import authMiddleware from '../middlewares/auth-middleware.js';
-import ctrlWrapper from "../helpers/errors/ctrlWrapper.js";
+import { body } from 'express-validator';
 
 const router = express.Router();
 
-router.get('/', ctrlWrapper(getProductsController));
-router.post('/', authMiddleware, ctrlWrapper(addProductController));
-router.get('/:id', validateObjectId, ctrlWrapper(getProductByIdController));
-router.delete('/:id', authMiddleware, validateObjectId, ctrlWrapper(deleteProductController));
-router.put('/:id', authMiddleware, validateObjectId, ctrlWrapper(editProductController));
+import productController from '../controllers/products-controller.js';
+import { validateObjectId, accessTokenValidator, validateInputFields, ctrlWrapper } from '../middlewares/index.js';
+
+const productValidations = [
+    body('price').isNumeric(),
+    body('title').isLength({ min: 3, max: 100 }).isString(),
+    body('description').isLength({ min: 3, max: 255 }).isString(),
+    body('mainPhoto').isURL(),
+    body('photos').isArray(),
+    body('currency').isLength({ min: 3, max: 3 }).isString()
+];
+
+router.get('/', ctrlWrapper(productController.getProducts));
+router.post('/', validateInputFields(productValidations), accessTokenValidator, ctrlWrapper(productController.addProduct));
+router.get('/:id', validateObjectId, ctrlWrapper(productController.getProductById));
+router.delete('/:id', accessTokenValidator, validateObjectId, ctrlWrapper(productController.deleteProduct));
+router.put('/:id', validateInputFields(productValidations), accessTokenValidator, validateObjectId, ctrlWrapper(productController.editProduct));
 
 export default router;
