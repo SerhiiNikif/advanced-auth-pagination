@@ -1,16 +1,16 @@
-# rest-api-mongo-swagger
+# advanced-auth-pagination
 
 # How to use
 
 ## 1. Clone Project into your local machine
 ```
-git clone https://github.com/SerhiiNikif/rest-api-mongo-swagger.git
+git clone https://github.com/SerhiiNikif/advanced-auth-pagination.git
 ```
 
 ## 2. Go into project folder
 
 ```
-cd rest-api-mongo-swagger
+cd advanced-auth-pagination
 ```
 
 ## 3. Setting environment file .env.
