@@ -17,7 +17,7 @@ class CategoryService {
 
     async addCategory(title) {
         await this.checkIfCategoryExists(title);
-        category = new CategoryModel({title});
+        const category = new CategoryModel({title});
         const result = await category.save();
         return {id: result._id}
     }

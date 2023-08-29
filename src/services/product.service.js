@@ -7,7 +7,7 @@ import ApiError from '../exceptions/api-error.js';
 class ProductService {
     async getProducts(attribute, sort, limit, page, currency) {
         const arrForAggregate = [
-            { $project: { _id: 1, price: 1, title: 1, mainPhoto: 1, createDate: 1 } }
+            { $project: { _id: 1, price: 1, title: 1, description: 1, mainPhoto: 1, photos: 1, currency: 1, categoryId: 1, createDate: 1 } }
         ];
     
         await paginateData(arrForAggregate, limit, page);
