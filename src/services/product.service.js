@@ -7,7 +7,7 @@ import ApiError from '../exceptions/api-error.js';
 class ProductService {
     async getProducts(attribute, sort, limit, page, currency) {
         const arrForAggregate = [
-            { $project: { _id: 1, price: 1, title: 1, mainPhoto: 1, createDate: 1 } }
+            { $project: { _id: 1, price: 1, title: 1, description: 1, mainPhoto: 1, photos: 1, currency: 1, categoryId: 1, createDate: 1 } }
         ];
     
         await paginateData(arrForAggregate, limit, page);
@@ -38,20 +38,20 @@ class ProductService {
         return result;
     }
 
-    async deleteProduct(id) {
-        let result = await ProductModel.findByIdAndDelete(id);
-        if (!result) throw ApiError.NotFoundError()
-        return {id: result._id}
-    }
-
     async editProduct (id, price, title,  description, mainPhoto, photos, currency, categoryId) {
         const result = await ProductModel.findByIdAndUpdate(
             id, 
-            {price, title,  description, mainPhoto, photos, currency, categoryId}, 
+            {price, title, description, mainPhoto, photos, currency, categoryId}, 
             {new: true});
     
         if (!result) throw ApiError.NotFoundError()
         return result
+    }
+
+    async deleteProduct(id) {
+        let result = await ProductModel.findByIdAndDelete(id);
+        if (!result) throw ApiError.NotFoundError()
+        return {id: result._id}
     }
 
     async checkIfProductExists(title) {

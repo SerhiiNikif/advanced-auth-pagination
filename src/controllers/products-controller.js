@@ -40,20 +40,9 @@ class ProductController {
         }
     }
 
-    async deleteProduct(req, res, next) {
-        try {
-            const deleteProductService = await productService.deleteProduct(
-                req.params.id
-            );
-            res.status(200).json(deleteProductService);
-        } catch (e) {
-            next(e);
-        }
-    }
-
     async editProduct(req, res, next) {
         try {
-            const editProductService = await editProduct(
+            const editProductService = await productService.editProduct(
                 req.params.id,
                 req.body.price,
                 req.body.title,
@@ -64,6 +53,17 @@ class ProductController {
                 req.body.categoryId
             );
             res.status(200).json(editProductService);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async deleteProduct(req, res, next) {
+        try {
+            const deleteProductService = await productService.deleteProduct(
+                req.params.id
+            );
+            res.status(200).json(deleteProductService);
         } catch (e) {
             next(e);
         }

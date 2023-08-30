@@ -46,17 +46,6 @@ class CategoryController {
         }
     }
 
-    async deleteCategory(req, res, next) {
-        try {
-            const deleteCategoryService = await categoryService.deleteCategory(
-                req.params.id
-            );
-            res.status(200).json(deleteCategoryService);
-        } catch (e) {
-            next(e);
-        }
-    }
-
     async editCategory(req, res, next) {
         try {
             const editCategoryService = await categoryService.editCategory(
@@ -64,6 +53,17 @@ class CategoryController {
                 req.body.title
             );
             res.status(200).json(editCategoryService);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async deleteCategory(req, res, next) {
+        try {
+            const deleteCategoryService = await categoryService.deleteCategory(
+                req.params.id
+            );
+            res.status(200).json(deleteCategoryService);
         } catch (e) {
             next(e);
         }

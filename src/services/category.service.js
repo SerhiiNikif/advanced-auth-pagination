@@ -22,7 +22,7 @@ class CategoryService {
         return {id: result._id}
     }
 
-    async getCategory(id) {
+    async getCategoryById(id) {
         const result = await CategoryModel.aggregate([
             { $match: {"_id": new mongoose.Types.ObjectId(id)} },
             { $project: { _id: 1, title: 1, createDate: 1 } }
@@ -42,16 +42,16 @@ class CategoryService {
         return result;
     }
 
-    async deleteCategory(id) {
-        let result = await CategoryModel.findByIdAndDelete(id);
-        if (!result) throw ApiError.NotFoundError()
-        return {id: result._id}
-    }
-
     async editCategory(id, title) {
         const result = await CategoryModel.findByIdAndUpdate(id, {title}, {new: true});
         if (!result) throw ApiError.NotFoundError()
         return result
+    }
+
+    async deleteCategory(id) {
+        let result = await CategoryModel.findByIdAndDelete(id);
+        if (!result) throw ApiError.NotFoundError()
+        return {id: result._id}
     }
 
     async checkIfCategoryExists(title) {
